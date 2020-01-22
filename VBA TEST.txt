@@ -1,0 +1,65 @@
+Sub ReferOtherBook()
+    Dim ex      As New Excel.Application    '// 処理用Excel
+    Dim wb      As Workbook                 '// ワークブック
+    Dim sPath                               '// ブックファイルパス
+    Dim r       As Range                    '// 取得対象のセル範囲
+    Dim sht     As Worksheet                '// 参照シート
+    '//ブックのフォルダまでのパス
+    ThisWorkbook.Path
+    
+    '// 開くブックを指定
+    sPath = "C:\web\Book1.xlsx"
+    
+    '// 読み取り専用で開く
+    Set wb = ex.Workbooks.Open(Filename:=sPath, UpdateLinks:=0, ReadOnly:=True, IgnoreReadOnlyRecommended:=True)
+    
+    '// 一番左のシートの入力セル範囲を取得
+    Set r = wb.Worksheets(1).UsedRange
+    
+    '// 各シートのA1セルを取得
+    For Each sht In wb.Worksheets
+        Set r = sht.Range("A1")
+        
+        Debug.Print r.Value
+    Next
+    
+    '// ブックを閉じる
+    Call wb.Close
+    
+    '// Excelアプリケーションを閉じる
+    Call ex.Application.Quit
+End Sub
+
+
+Sub makeText()
+Dim ws As Worksheet
+Set ws = ThisWorkbook.Worksheets(1)
+ 
+Dim datFile As String
+datFile = ActiveWorkbook.Path & "\data.txt"
+ 
+Open datFile For Output As #1
+ 
+Dim i As Long
+i = 1
+Do While ws.Cells(i, 1).Value <> ""
+    Print #1, ws.Cells(i, 1).Value
+    i = i + 1
+Loop
+ 
+Close #1
+ 
+MsgBox "data.txtに書き出しました"
+ 
+End Sub
+Sub Sample03()
+    Dim ws As Worksheet, flag As Boolean
+    For Each ws In Worksheets
+        If ws.Name = "合計" Then flag = True
+    Next ws
+    If flag = True Then
+        MsgBox "[合計]シートがあります", vbInformation
+    Else
+        MsgBox "[合計]シートはありません", vbInformation
+    End If
+End Sub
